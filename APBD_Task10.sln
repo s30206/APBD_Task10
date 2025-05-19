@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.API", "APBD_Task10.API\APBD_Task10.API.csproj", "{95958DC0-04BB-494F-B30B-4A656489603F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.API", "src\APBD_Task10.API\APBD_Task10.API.csproj", "{95958DC0-04BB-494F-B30B-4A656489603F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
