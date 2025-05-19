@@ -22,3 +22,7 @@ Create a file named `appsettings.json` inside the `src/APBD_P.API` folder with t
 </pre>
 
 In the `Database` field, provide your connection string to the Microsoft SQL Server instance.
+
+# Project structure
+
+TODO
