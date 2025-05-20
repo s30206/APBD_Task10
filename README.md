@@ -25,4 +25,5 @@ In the `Database` field, provide your connection string to the Microsoft SQL Ser
 
 # Project structure
 
-TODO
+The code is split into multiple projects to improve the structure, readability and maintainability of the application and to avoid issues like circular dependency.\
+Also, I got used to doing it this way :D
