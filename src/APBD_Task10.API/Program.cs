@@ -27,8 +27,28 @@ app.UseHttpsRedirection();
 
 app.MapGet("/api/devices", async (IDeviceService service, CancellationToken token) =>
 {
-    var result = await service.GetAllDevices(token);
-    return result != null ? Results.Ok(result) : Results.NotFound();
+    try
+    {
+        var result = await service.GetAllDevices(token);
+        return result != null ? Results.Ok(result) : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapGet("/api/devices/{id:int}", async (int id, IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.GetDeviceById(id, token);
+        return result != null ? Results.Ok(result) : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
 });
 
 app.Run();

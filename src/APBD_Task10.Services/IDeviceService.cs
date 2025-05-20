@@ -5,4 +5,5 @@ namespace APBD_Task10.Services;
 public interface IDeviceService
 {
     public Task<List<ShortDeviceDTO>> GetAllDevices(CancellationToken token);
+    public Task<FullDeviceDTO?> GetDeviceById(int id, CancellationToken token);
 }

@@ -15,4 +15,14 @@ public class DeviceRepository : IDeviceRepository
     {
         return await _context.Devices.ToListAsync(token);
     }
+
+    public async Task<Device?> GetDeviceById(int id, CancellationToken token)
+    {
+        return await _context.Devices
+            .Include(e => e.DeviceEmployees)
+            .ThenInclude(e => e.Employee)
+            .ThenInclude(p => p.Person)
+            .Include(d => d.DeviceType)
+            .FirstOrDefaultAsync(x => x.Id == id, token);
+    }
 }
