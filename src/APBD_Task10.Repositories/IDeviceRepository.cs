@@ -9,4 +9,6 @@ public interface IDeviceRepository
     public Task<List<Employee>> GetAllEmployees(CancellationToken token);
     public Task<Employee?> GetEmployeeById(int id, CancellationToken token);
     public Task<int> DeleteDeviceById(int id, CancellationToken token);
+    public Task<int> AddDevice(Device device, CancellationToken token);
+    public Task<DeviceType?> GetDeviceType(string typeName, CancellationToken token);
 }

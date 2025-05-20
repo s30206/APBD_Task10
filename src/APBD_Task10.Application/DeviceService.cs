@@ -98,4 +98,21 @@ public class DeviceService : IDeviceService
         var result = await _deviceRepository.DeleteDeviceById(id, token);
         return result > 0;
     }
+
+    public async Task<bool> AddDevice(InsertDeviceRequestDTO request, CancellationToken token)
+    {
+        var deviceType = await _deviceRepository.GetDeviceType(request.DeviceTypeName, token);
+        if (deviceType == null) return false;
+
+        var device = new Device()
+        {
+            Name = request.Name,
+            DeviceTypeId = deviceType.Id,
+            IsEnabled = request.IsEnabled,
+            AdditionalProperties = request.AdditionalProperties?.GetRawText() ?? "",
+        };
+        
+        var result = await _deviceRepository.AddDevice(device, token);
+        return result > 0;
+    }
 }

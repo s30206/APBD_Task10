@@ -25,7 +25,7 @@ INSERT INTO Device (Name, IsEnabled, AdditionalProperties, DeviceTypeId) VALUES
 ('Apple Watch Ultra 2', 1, '{"battery": "24%"}', 2),
 ('Raspberry Pi 4', 0, '{"ipAddress": "192.168.0.1", "network": "example"}', 3),
 ('Dell UltraSharp', 1, '{"ports": [{"type": "HDMI", "version": "2.0"}]}', 4),
-('HP LaserJet', 0, '{colors: "black and white"}', 5);
+('HP LaserJet', 0, '{"colors": "black and white"}', 5);
 
 INSERT INTO Employee (Salary, PositionId, PersonId, HireDate) VALUES
 (75000.00, 1, 1, '2021-03-01'),

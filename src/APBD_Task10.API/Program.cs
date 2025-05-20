@@ -1,4 +1,5 @@
 using APBD_Task10;
+using APBD_Task10.Models.DTOs;
 using APBD_Task10.Repositories;
 using APBD_Task10.Services;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +83,19 @@ app.MapDelete("/api/devices/{id:int}", async (int id, IDeviceService service, Ca
     {
         var result = await service.DeleteDeviceById(id, token);
         return result ? Results.NoContent() : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapPost("/api/devices/", async (InsertDeviceRequestDTO request, IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.AddDevice(request, token);
+        return result ? Results.Created("/api/devices/", request) : Results.BadRequest();
     }
     catch (Exception ex)
     {
