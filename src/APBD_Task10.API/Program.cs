@@ -10,7 +10,6 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<DeviceContext>(o => o.UseSqlServer(connectionString));
-
 builder.Services.AddTransient<IDeviceRepository, DeviceRepository>();
 builder.Services.AddTransient<IDeviceService, DeviceService>();
 
@@ -43,6 +42,32 @@ app.MapGet("/api/devices/{id:int}", async (int id, IDeviceService service, Cance
     try
     {
         var result = await service.GetDeviceById(id, token);
+        return result != null ? Results.Ok(result) : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapGet("/api/employess", async (IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.GetAllEmployees(token);
+        return result != null ? Results.Ok(result) : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapGet("/api/employees/{id:int}", async (int id, IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.GetEmployeeById(id, token);
         return result != null ? Results.Ok(result) : Results.NotFound();
     }
     catch (Exception ex)

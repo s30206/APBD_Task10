@@ -20,7 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\APBD_Task10.Models\APBD_Task10.Models.csproj" />
       <ProjectReference Include="..\APBD_Task10.Repositories\APBD_Task10.Repositories.csproj" />
-      <ProjectReference Include="..\APBD_Task10.Services\APBD_Task10.Services.csproj" />
+      <ProjectReference Include="..\APBD_Task10.Application\APBD_Task10.Application.csproj" />
     </ItemGroup>
 
 </Project>

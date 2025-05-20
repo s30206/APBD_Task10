@@ -25,4 +25,19 @@ public class DeviceRepository : IDeviceRepository
             .Include(d => d.DeviceType)
             .FirstOrDefaultAsync(x => x.Id == id, token);
     }
+
+    public Task<List<Employee>> GetAllEmployees(CancellationToken token)
+    {
+        return _context.Employees
+            .Include(e => e.Person)
+            .ToListAsync(token);
+    }
+
+    public async Task<Employee?> GetEmployeeById(int id, CancellationToken token)
+    {
+        return await _context.Employees
+            .Include(e => e.Person)
+            .Include(p => p.Position)
+            .FirstOrDefaultAsync(x => x.Id == id, token);
+    }
 }
