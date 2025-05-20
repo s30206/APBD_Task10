@@ -8,4 +8,5 @@ public interface IDeviceRepository
     public Task<Device?> GetDeviceById(int id, CancellationToken token);
     public Task<List<Employee>> GetAllEmployees(CancellationToken token);
     public Task<Employee?> GetEmployeeById(int id, CancellationToken token);
+    public Task<int> DeleteDeviceById(int id, CancellationToken token);
 }

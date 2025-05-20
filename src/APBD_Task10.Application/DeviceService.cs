@@ -35,20 +35,20 @@ public class DeviceService : IDeviceService
         
         var currentEmployee = device.DeviceEmployees.FirstOrDefault(o => o.ReturnDate == null);
 
+
         return new FullDeviceDTO
         {
             Name = device.Name,
             DeviceTypeName = device.DeviceType?.Name,
             IsEnabled = device.IsEnabled,
-            Employee = currentEmployee == null
+            Employee = currentEmployee is null
                 ? null
                 : new ShortEmployeeDTO
                 {
                     Id = currentEmployee.Id,
-                    Name = currentEmployee.Employee.Person.FirstName 
-                           + " " + currentEmployee.Employee.Person.MiddleName + " " + currentEmployee.Employee.Person.LastName,
+                    Name = $"{currentEmployee.Employee.Person.FirstName} {currentEmployee.Employee.Person.MiddleName} {currentEmployee.Employee.Person.LastName}",
                 },
-            AdditionalProperties = JsonDocument.Parse(device.AdditionalProperties)
+            AdditionalProperties = JsonDocument.Parse(device.AdditionalProperties).RootElement
         };
     }
 
@@ -59,10 +59,10 @@ public class DeviceService : IDeviceService
 
         foreach (var employee in employees)
         {
-            result.Add(new ShortEmployeeDTO()
+            result.Add(new ShortEmployeeDTO
             {
                 Id = employee.Id,
-                Name = employee.Person.FirstName + " " + employee.Person.MiddleName + " " + employee.Person.LastName,
+                Name = $"{employee.Person.FirstName} {employee.Person.MiddleName} {employee.Person.LastName}",
             });
         }
         
@@ -84,12 +84,18 @@ public class DeviceService : IDeviceService
             PhoneNumber = employee.Person.PhoneNumber,
             Email = employee.Person.Email,
             Salary = employee.Salary,
-            Position = new
+            Position = new ShortPositionDTO
             {
                 Id = employee.PositionId,
                 Name = employee.Position.Name,
             },
             HireDate = employee.HireDate,
         };
+    }
+
+    public async Task<bool> DeleteDeviceById(int id, CancellationToken token)
+    {
+        var result = await _deviceRepository.DeleteDeviceById(id, token);
+        return result > 0;
     }
 }

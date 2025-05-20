@@ -76,4 +76,17 @@ app.MapGet("/api/employees/{id:int}", async (int id, IDeviceService service, Can
     }
 });
 
+app.MapDelete("/api/devices/{id:int}", async (int id, IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.DeleteDeviceById(id, token);
+        return result ? Results.NoContent() : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
 app.Run();

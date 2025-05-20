@@ -40,4 +40,17 @@ public class DeviceRepository : IDeviceRepository
             .Include(p => p.Position)
             .FirstOrDefaultAsync(x => x.Id == id, token);
     }
+
+    public async Task<int> DeleteDeviceById(int id, CancellationToken token)
+    {
+        var device = await _context.Devices
+            .Include(de => de.DeviceEmployees)
+            .FirstOrDefaultAsync(x => x.Id == id, token);
+        if (device == null) return 0;
+        
+        _context.DeviceEmployees.RemoveRange(device.DeviceEmployees);
+        
+        _context.Devices.Remove(device);
+        return await _context.SaveChangesAsync(token);
+    }
 }
