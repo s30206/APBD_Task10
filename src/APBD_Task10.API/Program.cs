@@ -103,4 +103,17 @@ app.MapPost("/api/devices/", async (InsertDeviceRequestDTO request, IDeviceServi
     }
 });
 
+app.MapPut("/api/devices/{id:int}", async (int id, InsertDeviceRequestDTO request, IDeviceService service, CancellationToken token) =>
+{
+    try
+    {
+        var result = await service.UpdateDevice(id, request, token);
+        return result ? Results.NoContent() : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
 app.Run();

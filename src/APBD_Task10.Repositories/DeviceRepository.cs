@@ -1,5 +1,4 @@
-﻿using APBD_Task10.Models.DTOs;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace APBD_Task10.Repositories;
 
@@ -27,9 +26,9 @@ public class DeviceRepository : IDeviceRepository
             .FirstOrDefaultAsync(x => x.Id == id, token);
     }
 
-    public Task<List<Employee>> GetAllEmployees(CancellationToken token)
+    public async Task<List<Employee>> GetAllEmployees(CancellationToken token)
     {
-        return _context.Employees
+        return await _context.Employees
             .Include(e => e.Person)
             .ToListAsync(token);
     }
@@ -64,5 +63,11 @@ public class DeviceRepository : IDeviceRepository
     public async Task<DeviceType?> GetDeviceType(string typeName, CancellationToken token)
     {
         return await _context.DeviceTypes.FirstOrDefaultAsync(x => x.Name == typeName, token);
+    }
+
+    public async Task<int> UpdateDevice(Device device, CancellationToken token)
+    {
+        _context.Entry(device).State = EntityState.Modified;
+        return await _context.SaveChangesAsync(token);
     }
 }
