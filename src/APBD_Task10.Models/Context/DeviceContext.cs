@@ -27,9 +27,6 @@ public partial class DeviceContext : DbContext
 
     public virtual DbSet<Position> Positions { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=Database");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("s30206");
