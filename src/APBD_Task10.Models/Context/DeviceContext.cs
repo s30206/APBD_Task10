@@ -26,6 +26,7 @@ public partial class DeviceContext : DbContext
     public virtual DbSet<Person> People { get; set; }
 
     public virtual DbSet<Position> Positions { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
