@@ -51,7 +51,7 @@ app.MapGet("/api/devices/{id:int}", async (int id, IDeviceService service, Cance
     }
 });
 
-app.MapGet("/api/employess", async (IDeviceService service, CancellationToken token) =>
+app.MapGet("/api/employees", async (IDeviceService service, CancellationToken token) =>
 {
     try
     {
