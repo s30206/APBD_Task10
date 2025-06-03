@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\APBD_Task10.Repositories\APBD_Task10.Repositories.csproj" />
+      <ProjectReference Include="..\APBD_Task11.Repositories\APBD_Task11.Repositories.csproj" />
     </ItemGroup>
 
 </Project>

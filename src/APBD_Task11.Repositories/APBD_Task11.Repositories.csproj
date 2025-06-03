@@ -4,10 +4,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>APBD_Task10.Repositories</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\APBD_Task10.Models\APBD_Task10.Models.csproj" />
+      <ProjectReference Include="..\APBD_Task11.Models\APBD_Task11.Models.csproj" />
     </ItemGroup>
 
 </Project>

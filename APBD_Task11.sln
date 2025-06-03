@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.API", "src\APBD_Task10.API\APBD_Task10.API.csproj", "{95958DC0-04BB-494F-B30B-4A656489603F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task11.API", "src\APBD_Task11.API\APBD_Task11.API.csproj", "{95958DC0-04BB-494F-B30B-4A656489603F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.Models", "src\APBD_Task10.Models\APBD_Task10.Models.csproj", "{9F922DDE-0A46-4328-B813-F5FE9AF7603B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task11.Models", "src\APBD_Task11.Models\APBD_Task11.Models.csproj", "{9F922DDE-0A46-4328-B813-F5FE9AF7603B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.Application", "src\APBD_Task10.Application\APBD_Task10.Application.csproj", "{A1136D43-4F54-44C5-98F2-D274681DF64D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task11.Application", "src\APBD_Task11.Application\APBD_Task11.Application.csproj", "{A1136D43-4F54-44C5-98F2-D274681DF64D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task10.Repositories", "src\APBD_Task10.Repositories\APBD_Task10.Repositories.csproj", "{DB15F631-8011-481A-A255-CBED87ADCABC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_Task11.Repositories", "src\APBD_Task11.Repositories\APBD_Task11.Repositories.csproj", "{DB15F631-8011-481A-A255-CBED87ADCABC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
