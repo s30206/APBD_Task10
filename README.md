@@ -8,20 +8,27 @@ Create a file named `appsettings.json` inside the `src/APBD_Task11.API` folder w
 
 <pre>
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Warning"
+        }
+    },
+    "AllowedHosts": "*",
+    "ConnectionStrings": {
+        "Database": ""
+    },
+    "Jwt": {
+        "Issuer": "http://localhost:5300",
+        "Audience": "http://localhost:5300",
+        "Key": "",
+        "ValidInMinutes": 10
     }
-  },
-  "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "Database": ""
-  }
 }
 </pre>
 
-In the `Database` field, provide your connection string to the Microsoft SQL Server instance.
+In the `Database` field, provide your connection string to the Microsoft SQL Server instance.\
+In the `Key` field, provide a secure key used to sign and validate JWT tokens (it should be a long, random string)
 
 # Project structure
 
