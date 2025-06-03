@@ -27,7 +27,6 @@ public partial class DeviceContext : DbContext
 
     public virtual DbSet<Position> Positions { get; set; }
     
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Device>(entity =>
@@ -69,7 +68,7 @@ public partial class DeviceContext : DbContext
         {
             entity.ToTable("DeviceType");
 
-            entity.HasIndex(e => e.Name, "UQ__DeviceTy__737584F6D1FD39C9").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__DeviceTy__737584F64E6736B9").IsUnique();
 
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
@@ -98,11 +97,11 @@ public partial class DeviceContext : DbContext
         {
             entity.ToTable("Person");
 
-            entity.HasIndex(e => e.PassportNumber, "UQ__Person__45809E712C912F68").IsUnique();
+            entity.HasIndex(e => e.PassportNumber, "UQ__Person__45809E71EE4ADD02").IsUnique();
 
-            entity.HasIndex(e => e.PhoneNumber, "UQ__Person__85FB4E38E0E8D508").IsUnique();
+            entity.HasIndex(e => e.PhoneNumber, "UQ__Person__85FB4E3849B995AC").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Person__A9D10534DFD9B460").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Person__A9D10534DBB4805E").IsUnique();
 
             entity.Property(e => e.Email)
                 .HasMaxLength(150)
@@ -128,7 +127,7 @@ public partial class DeviceContext : DbContext
         {
             entity.ToTable("Position");
 
-            entity.HasIndex(e => e.Name, "UQ__Position__737584F6F7E203B9").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__Position__737584F635DDBA3E").IsUnique();
 
             entity.Property(e => e.Name)
                 .HasMaxLength(100)

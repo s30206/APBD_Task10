@@ -14,7 +14,7 @@ public partial class Employee
     public int PersonId { get; set; }
 
     public DateTime HireDate { get; set; }
-
+    
     public virtual ICollection<DeviceEmployee> DeviceEmployees { get; set; } = new List<DeviceEmployee>();
 
     public virtual Person Person { get; set; } = null!;
