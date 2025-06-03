@@ -3,7 +3,7 @@ using APBD_Task10.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace APBD_Task10.Controllers;
+namespace APBD_Task10Controllers;
 
 [Route("api/devices")]
 [ApiController]
