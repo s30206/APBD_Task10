@@ -25,9 +25,7 @@ public class DeviceRepository : IDeviceRepository
             .Include(d => d.DeviceType)
             .FirstOrDefaultAsync(x => x.Id == id, token);
     }
-
     
-
     public async Task<int> DeleteDeviceById(int id, CancellationToken token)
     {
         var device = await _context.Devices

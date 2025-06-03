@@ -2,45 +2,44 @@ using APBD_Task10.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace APBD_Task10.Controllers
+namespace APBD_Task10.Controllers;
+
+[Route("api/employees")]
+[ApiController]
+public class EmployeesController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EmployeesController : ControllerBase
+    private readonly IEmployeeService _employeeService;
+
+    public EmployeesController(IEmployeeService employeeService)
     {
-        private readonly IEmployeeService _employeeService;
+        _employeeService = employeeService;
+    }
 
-        public EmployeesController(IEmployeeService employeeService)
+    [HttpGet]
+    public async Task<IActionResult> GetAllEmployees(CancellationToken token)
+    {
+        try
         {
-            _employeeService = employeeService;
+            var result = await _employeeService.GetAllEmployees(token);
+            return result != null ? Ok(result) : NotFound();
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllEmployees(CancellationToken token)
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await _employeeService.GetAllEmployees(token);
-                return result != null ? Ok(result) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            return Problem(ex.Message);
         }
+    }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetEmployeeById(int id, CancellationToken token)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetEmployeeById(int id, CancellationToken token)
+    {
+        try
         {
-            try
-            {
-                var result = await _employeeService.GetEmployeeById(id, token);
-                return result != null ? Ok(result) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            var result = await _employeeService.GetEmployeeById(id, token);
+            return result != null ? Ok(result) : NotFound();
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
         }
     }
 }
