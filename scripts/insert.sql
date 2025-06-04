@@ -44,3 +44,7 @@ INSERT INTO DeviceEmployee (DeviceId, EmployeeId, IssueDate, ReturnDate) VALUES
 INSERT INTO Role (Name) VALUES
 ('Admin'),
 ('User');
+
+-- An admin account with username qwe and password qweqweqweqwe
+-- For testing only
+INSERT INTO Account (Username, Password, EmployeeId, RoleId) VALUES ('qwe', 'AQAAAAIAAYagAAAAEGwys4nTYe1xrC8iaeBS1vp80QVFkaloBhTsG44IoKTPKLHMbgyZ+NX78GmpkhCGvg==', 5, 1);

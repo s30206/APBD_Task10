@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace APBD_Task10.Controllers;
 
-[Authorize]
 [Route("api/accounts")]
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class AccountsController : ControllerBase
 {
@@ -27,14 +27,28 @@ public class AccountsController : ControllerBase
 
     // GET: api/Accounts
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+    public async Task<ActionResult<IEnumerable<ShortAccountDTO>>> GetAccounts()
     {
-        return await _context.Accounts.ToListAsync();
+        var accounts = await _context.Accounts.ToListAsync();
+
+        var result = new List<ShortAccountDTO>();
+        
+        foreach (var account in accounts)
+        {
+            result.Add(new ShortAccountDTO()
+            {
+                Id = account.Id,
+                Username = account.Username,
+                Password = account.Password
+            });
+        }
+
+        return result;
     }
 
     // GET: api/Accounts/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Account>> GetAccount(int id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ShortAccountDTO>> GetAccount(int id)
     {
         var account = await _context.Accounts.FindAsync(id);
 
@@ -43,18 +57,28 @@ public class AccountsController : ControllerBase
             return NotFound();
         }
 
-        return account;
+        return new ShortAccountDTO()
+        {
+            Id = account.Id,
+            Username = account.Username,
+            Password = account.Password
+        };
     }
 
     // PUT: api/Accounts/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAccount(int id, Account account)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PutAccount(int id, CreateAccountDTO newAccount)
     {
-        if (id != account.Id)
+        var account = await _context.Accounts.FindAsync(id);
+        
+        if (account is null || newAccount.Username != account.Username || newAccount.EmployeeId != account.EmployeeId)
         {
             return BadRequest();
         }
+
+        account.Username = newAccount.Username;
+        account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
 
         _context.Entry(account).State = EntityState.Modified;
 
