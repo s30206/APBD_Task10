@@ -59,7 +59,8 @@ public class AccountsController : ControllerBase
         }
         
         // I have no idea why roles are accessed this way, but it works :D
-        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && int.Parse(User.FindFirst("id")?.Value) != account.Id)
+        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
+            int.Parse(User.FindFirst("id")?.Value) != account.Id)
         {
             return BadRequest("Not admins can check only their own data");
         }
@@ -75,15 +76,28 @@ public class AccountsController : ControllerBase
     // PUT: api/Accounts/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> PutAccount(int id, CreateAccountDTO newAccount)
+    [Authorize]
+    public async Task<IActionResult> PutAccount(int id, UpdateAccountDTO newAccount)
     {
         var account = await _context.Accounts.FindAsync(id);
         
-        if (account is null || newAccount.Username != account.Username || newAccount.EmployeeId != account.EmployeeId)
+        if (account is null || newAccount.Username != account.Username)
         {
             return BadRequest();
         }
+        
+        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
+            newAccount.RoleId is not null)
+        {
+            return BadRequest("Not admins cannot change roles for accounts");
+        }
+
+        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
+            account.Username != User.FindFirst("username").Value)
+        {
+            return BadRequest("Not admins cannot modify not their account");
+        }
+
 
         account.Username = newAccount.Username;
         account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
