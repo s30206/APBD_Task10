@@ -26,21 +26,30 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] AccountLoginDTO request, CancellationToken cancellationToken)
     {
-        var foundAccount = await _context.Accounts.Include(r => r.Role).FirstOrDefaultAsync(a => a.Username == request.Username, cancellationToken);
-        
-        if (foundAccount == null)
-            return Unauthorized();
-        
-        var verification = _passwordHasher.VerifyHashedPassword(foundAccount, foundAccount.Password, request.Password);
-        
-        if (verification == PasswordVerificationResult.Failed)
-            return Unauthorized();
-
-        var token = new
+        try
         {
-            AccessToken = _tokenService.GenerateToken(foundAccount),
-        };
-        
-        return Ok(token);
+            var foundAccount = await _context.Accounts.Include(r => r.Role)
+                .FirstOrDefaultAsync(a => a.Username == request.Username, cancellationToken);
+
+            if (foundAccount == null)
+                return Unauthorized();
+
+            var verification =
+                _passwordHasher.VerifyHashedPassword(foundAccount, foundAccount.Password, request.Password);
+
+            if (verification == PasswordVerificationResult.Failed)
+                return Unauthorized();
+
+            var token = new
+            {
+                AccessToken = _tokenService.GenerateToken(foundAccount),
+            };
+
+            return Ok(token);
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
     }
 }

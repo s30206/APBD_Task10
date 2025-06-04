@@ -29,21 +29,28 @@ public class AccountsController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<ShortAccountDTO>>> GetAccounts()
     {
-        var accounts = await _context.Accounts.ToListAsync();
-
-        var result = new List<ShortAccountDTO>();
-        
-        foreach (var account in accounts)
+        try
         {
-            result.Add(new ShortAccountDTO()
-            {
-                Id = account.Id,
-                Username = account.Username,
-                Password = account.Password
-            });
-        }
+            var accounts = await _context.Accounts.ToListAsync();
 
-        return result;
+            var result = new List<ShortAccountDTO>();
+
+            foreach (var account in accounts)
+            {
+                result.Add(new ShortAccountDTO()
+                {
+                    Id = account.Id,
+                    Username = account.Username,
+                    Password = account.Password
+                });
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
     }
 
     // GET: api/Accounts/5
@@ -51,26 +58,33 @@ public class AccountsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ShortAccountDTO>> GetAccount(int id)
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
-        
-        if (account == null)
+        try
         {
-            return NotFound();
-        }
-        
-        // I have no idea why roles are accessed this way, but it works :D
-        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
-            int.Parse(User.FindFirst("id")?.Value) != account.Id)
-        {
-            return BadRequest("Not admins can check only their own data");
-        }
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
 
-        return new ShortAccountDTO()
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            // I have no idea why roles are accessed this way, but it works :D
+            if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" &&
+                int.Parse(User.FindFirst("id")?.Value) != account.Id)
+            {
+                return BadRequest("Not admins can check only their own data");
+            }
+
+            return new ShortAccountDTO()
+            {
+                Id = account.Id,
+                Username = account.Username,
+                Password = account.Password
+            };
+        }
+        catch (Exception ex)
         {
-            Id = account.Id,
-            Username = account.Username,
-            Password = account.Password
-        };
+            return Problem(ex.Message);
+        }
     }
 
     // PUT: api/Accounts/5
@@ -79,49 +93,56 @@ public class AccountsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutAccount(int id, UpdateAccountDTO newAccount)
     {
-        var account = await _context.Accounts.FindAsync(id);
-        
-        if (account is null || newAccount.Username != account.Username)
-        {
-            return BadRequest();
-        }
-        
-        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
-            newAccount.RoleId is not null)
-        {
-            return BadRequest("Not admins cannot change roles for accounts");
-        }
-
-        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && 
-            account.Username != User.FindFirst("username").Value)
-        {
-            return BadRequest("Not admins cannot modify not their account");
-        }
-
-
-        account.Username = newAccount.Username;
-        account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
-        account.RoleId = newAccount.RoleId ?? account.RoleId;
-
-        _context.Entry(account).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!AccountExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
+            var account = await _context.Accounts.FindAsync(id);
 
-        return NoContent();
+            if (account is null || newAccount.Username != account.Username)
+            {
+                return BadRequest();
+            }
+
+            if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" &&
+                newAccount.RoleId is not null)
+            {
+                return BadRequest("Not admins cannot change roles for accounts");
+            }
+
+            if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" &&
+                account.Username != User.FindFirst("username").Value)
+            {
+                return BadRequest("Not admins cannot modify not their account");
+            }
+
+
+            account.Username = newAccount.Username;
+            account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
+            account.RoleId = newAccount.RoleId ?? account.RoleId;
+
+            _context.Entry(account).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AccountExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
     }
 
     // POST: api/Accounts
@@ -130,31 +151,38 @@ public class AccountsController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Account>> PostAccount([FromBody] CreateAccountDTO newAccount)
     {
-        if (await _context.Accounts.Where(a => a.Username == newAccount.Username).FirstOrDefaultAsync() != null)
-            return BadRequest("This username is taken");
-
-        if (await _context.Roles.FindAsync(newAccount.RoleId) == null)
-            return BadRequest("This role id doesn't exist. Possible values: 1 (Admin), 2(User)");
-        
-        var account = new Account
+        try
         {
-            Username = newAccount.Username,
-            Password = newAccount.Password,
-            EmployeeId = newAccount.EmployeeId,
-            RoleId = newAccount.RoleId ?? 2
-        };
-        
-        account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
-        
-        _context.Accounts.Add(account);
-        await _context.SaveChangesAsync();
+            if (await _context.Accounts.Where(a => a.Username == newAccount.Username).FirstOrDefaultAsync() != null)
+                return BadRequest("This username is taken");
 
-        return CreatedAtAction("GetAccount", new { id = account.Id }, new ShortAccountDTO()
+            if (await _context.Roles.FindAsync(newAccount.RoleId) == null)
+                return BadRequest("This role id doesn't exist. Possible values: 1 (Admin), 2(User)");
+
+            var account = new Account
+            {
+                Username = newAccount.Username,
+                Password = newAccount.Password,
+                EmployeeId = newAccount.EmployeeId,
+                RoleId = newAccount.RoleId ?? 2
+            };
+
+            account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
+
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAccount", new { id = account.Id }, new ShortAccountDTO()
+            {
+                Id = account.Id,
+                Username = account.Username,
+                Password = account.Password
+            });
+        }
+        catch (Exception ex)
         {
-            Id = account.Id,
-            Username = account.Username,
-            Password = account.Password
-        });
+            return Problem(ex.Message);
+        }
     }
 
     // DELETE: api/Accounts/5
@@ -162,16 +190,23 @@ public class AccountsController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAccount(int id)
     {
-        var account = await _context.Accounts.FindAsync(id);
-        if (account == null)
+        try
         {
-            return NotFound();
+            var account = await _context.Accounts.FindAsync(id);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
-
-        _context.Accounts.Remove(account);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
     }
 
     private bool AccountExists(int id)
