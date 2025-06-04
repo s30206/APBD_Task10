@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace APBD_Task10Controllers;
 
 [Route("api/devices")]
+[Authorize]
 [ApiController]
 public class DevicesController : ControllerBase
 {
@@ -19,6 +20,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllDevices(CancellationToken token)
     {
         try
@@ -47,6 +49,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteDeviceById(int id, CancellationToken token)
     {
         try
@@ -61,6 +64,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddDevice([FromBody] InsertDeviceRequestDTO request, CancellationToken token)
     {
         try

@@ -1,10 +1,12 @@
 using APBD_Task10.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBD_Task10.Controllers;
 
 [Route("api/employees")]
+[Authorize]
 [ApiController]
 public class EmployeesController : ControllerBase
 {
@@ -16,6 +18,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllEmployees(CancellationToken token)
     {
         try
