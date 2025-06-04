@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 namespace APBD_Task10.Controllers;
 
 [Route("api/accounts")]
-[Authorize(Roles = "Admin")]
 [ApiController]
 public class AccountsController : ControllerBase
 {
@@ -27,6 +26,7 @@ public class AccountsController : ControllerBase
 
     // GET: api/Accounts
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<ShortAccountDTO>>> GetAccounts()
     {
         var accounts = await _context.Accounts.ToListAsync();
@@ -48,13 +48,20 @@ public class AccountsController : ControllerBase
 
     // GET: api/Accounts/5
     [HttpGet("{id:int}")]
+    [Authorize]
     public async Task<ActionResult<ShortAccountDTO>> GetAccount(int id)
     {
-        var account = await _context.Accounts.FindAsync(id);
-
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+        
         if (account == null)
         {
             return NotFound();
+        }
+        
+        // I have no idea why roles are accessed this way, but it works :D
+        if (User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value != "Admin" && int.Parse(User.FindFirst("id")?.Value) != account.Id)
+        {
+            return BadRequest("Not admins can check only their own data");
         }
 
         return new ShortAccountDTO()
@@ -68,6 +75,7 @@ public class AccountsController : ControllerBase
     // PUT: api/Accounts/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PutAccount(int id, CreateAccountDTO newAccount)
     {
         var account = await _context.Accounts.FindAsync(id);
@@ -105,7 +113,7 @@ public class AccountsController : ControllerBase
     // POST: api/Accounts
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Account>> PostAccount([FromBody] CreateAccountDTO newAccount)
     {
         if (await _context.Accounts.Where(a => a.Username == newAccount.Username).FirstOrDefaultAsync() != null)
@@ -137,6 +145,7 @@ public class AccountsController : ControllerBase
 
     // DELETE: api/Accounts/5
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAccount(int id)
     {
         var account = await _context.Accounts.FindAsync(id);
