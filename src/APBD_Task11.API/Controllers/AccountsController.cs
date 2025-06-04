@@ -79,6 +79,7 @@ public class AccountsController : ControllerBase
 
         account.Username = newAccount.Username;
         account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
+        account.RoleId = newAccount.RoleId ?? account.RoleId;
 
         _context.Entry(account).State = EntityState.Modified;
 
@@ -107,12 +108,18 @@ public class AccountsController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<Account>> PostAccount([FromBody] CreateAccountDTO newAccount)
     {
+        if (await _context.Accounts.Where(a => a.Username == newAccount.Username).FirstOrDefaultAsync() != null)
+            return BadRequest("This username is taken");
+
+        if (await _context.Roles.FindAsync(newAccount.RoleId) == null)
+            return BadRequest("This role id doesn't exist. Possible values: 1 (Admin), 2(User)");
+        
         var account = new Account
         {
             Username = newAccount.Username,
             Password = newAccount.Password,
             EmployeeId = newAccount.EmployeeId,
-            RoleId = 1
+            RoleId = newAccount.RoleId ?? 2
         };
         
         account.Password = _passwordHasher.HashPassword(account, newAccount.Password);
@@ -120,7 +127,12 @@ public class AccountsController : ControllerBase
         _context.Accounts.Add(account);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetAccount", new { id = account.Id }, account);
+        return CreatedAtAction("GetAccount", new { id = account.Id }, new ShortAccountDTO()
+        {
+            Id = account.Id,
+            Username = account.Username,
+            Password = account.Password
+        });
     }
 
     // DELETE: api/Accounts/5
