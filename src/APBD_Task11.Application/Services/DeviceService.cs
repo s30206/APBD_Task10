@@ -21,7 +21,7 @@ public class DeviceService : IDeviceService
         {
             result.Add(new ShortDeviceDTO
             {
-                ID = device.Id,
+                Id = device.Id,
                 Name = device.Name
             });
         }
@@ -39,15 +39,8 @@ public class DeviceService : IDeviceService
         return new FullDeviceDTO
         {
             Name = device.Name,
-            DeviceTypeName = device.DeviceType?.Name,
+            Type = device.DeviceType?.Name,
             IsEnabled = device.IsEnabled,
-            Employee = currentEmployee is null
-                ? null
-                : new ShortEmployeeDTO
-                {
-                    Id = currentEmployee.Id,
-                    Name = $"{currentEmployee.Employee.Person.FirstName} {currentEmployee.Employee.Person.MiddleName} {currentEmployee.Employee.Person.LastName}",
-                },
             AdditionalProperties = JsonDocument.Parse(device.AdditionalProperties).RootElement
         };
     }
@@ -60,7 +53,7 @@ public class DeviceService : IDeviceService
 
     public async Task<bool> AddDevice(InsertDeviceRequestDTO request, CancellationToken token)
     {
-        var deviceType = await _deviceRepository.GetDeviceType(request.DeviceTypeName, token);
+        var deviceType = await _deviceRepository.GetDeviceType(request.TypeId, token);
         if (deviceType == null) return false;
 
         var device = new Device()
@@ -80,7 +73,7 @@ public class DeviceService : IDeviceService
         var device = await _deviceRepository.GetDeviceById(id, token);
         if (device == null) return false;
         
-        var deviceType = await _deviceRepository.GetDeviceType(request.DeviceTypeName, token);
+        var deviceType = await _deviceRepository.GetDeviceType(request.TypeId, token);
         if (deviceType == null) return false;
         
         device.Name = request.Name;

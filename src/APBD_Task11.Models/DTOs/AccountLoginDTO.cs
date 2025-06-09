@@ -6,7 +6,7 @@ public class AccountLoginDTO
 {
     [Required]
     [RegularExpression("^[a-zA-Z][a-zA-Z0-9]*$", ErrorMessage = "Username must not start with a number")]
-    public string Username { get; set; }
+    public string Login { get; set; }
     [Required]
     [MinLength(12)]
     public string Password { get; set; }

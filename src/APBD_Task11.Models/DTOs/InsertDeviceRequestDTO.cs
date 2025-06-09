@@ -9,7 +9,7 @@ public class InsertDeviceRequestDTO
     public string Name { get; set; }
     
     [Required]
-    public string DeviceTypeName { get; set; }
+    public int TypeId { get; set; }
     
     [Required]
     public bool IsEnabled { get; set; }

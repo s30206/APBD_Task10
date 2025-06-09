@@ -1,7 +1,7 @@
 ﻿namespace APBD_Task10.Models.DTOs;
 
-public class ShortAccountDTO
+public class SpecificAccountDTO
 {
-    public int Id { get; set; }
     public string Username { get; set; }
+    public string Role { get; set; }
 }

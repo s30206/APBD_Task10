@@ -41,7 +41,6 @@ public class AccountsController : ControllerBase
                 {
                     Id = account.Id,
                     Username = account.Username,
-                    Password = account.Password
                 });
             }
 
@@ -56,11 +55,11 @@ public class AccountsController : ControllerBase
     // GET: api/Accounts/5
     [HttpGet("{id:int}")]
     [Authorize]
-    public async Task<ActionResult<ShortAccountDTO>> GetAccount(int id)
+    public async Task<ActionResult<SpecificAccountDTO>> GetAccount(int id)
     {
         try
         {
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+            var account = await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Id == id);
 
             if (account == null)
             {
@@ -73,11 +72,10 @@ public class AccountsController : ControllerBase
                 return BadRequest("Not admins can check only their own data");
             }
 
-            return new ShortAccountDTO()
+            return new SpecificAccountDTO()
             {
-                Id = account.Id,
                 Username = account.Username,
-                Password = account.Password
+                Role = account.Role.Name,
             };
         }
         catch (Exception ex)
@@ -172,8 +170,7 @@ public class AccountsController : ControllerBase
             return CreatedAtAction("GetAccount", new { id = account.Id }, new ShortAccountDTO()
             {
                 Id = account.Id,
-                Username = account.Username,
-                Password = account.Password
+                Username = account.Username
             });
         }
         catch (Exception ex)

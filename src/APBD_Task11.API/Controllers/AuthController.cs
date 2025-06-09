@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         try
         {
             var foundAccount = await _context.Accounts.Include(r => r.Role)
-                .FirstOrDefaultAsync(a => a.Username == request.Username, cancellationToken);
+                .FirstOrDefaultAsync(a => a.Username == request.Login, cancellationToken);
 
             if (foundAccount == null)
                 return Unauthorized();

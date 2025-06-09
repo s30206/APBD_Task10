@@ -22,7 +22,7 @@ public class EmployeeService : IEmployeeService
             result.Add(new ShortEmployeeDTO
             {
                 Id = employee.Id,
-                Name = $"{employee.Person.FirstName} {employee.Person.MiddleName} {employee.Person.LastName}",
+                FullName = $"{employee.Person.FirstName} {employee.Person.MiddleName} {employee.Person.LastName}",
             });
         }
         
@@ -36,19 +36,16 @@ public class EmployeeService : IEmployeeService
 
         return new FullEmployeeDTO
         {
-            Id = employee.Id,
-            FirstName = employee.Person.FirstName,
-            MiddleName = employee.Person.MiddleName,
-            LastName = employee.Person.LastName,
-            PassportNumber = employee.Person.PassportNumber,
-            PhoneNumber = employee.Person.PhoneNumber,
-            Email = employee.Person.Email,
-            Salary = employee.Salary,
-            Position = new ShortPositionDTO
-            {
-                Id = employee.PositionId,
-                Name = employee.Position.Name,
+            Person = new PersonDTO() {
+                FirstName = employee.Person.FirstName,
+                MiddleName = employee.Person.MiddleName,
+                LastName = employee.Person.LastName,
+                PassportNumber = employee.Person.PassportNumber,
+                PhoneNumber = employee.Person.PhoneNumber,
+                Email = employee.Person.Email
             },
+            Salary = employee.Salary,
+            Position = employee.Position.Name,
             HireDate = employee.HireDate,
         };
     }

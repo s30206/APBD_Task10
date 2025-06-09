@@ -45,9 +45,9 @@ public class DeviceRepository : IDeviceRepository
         return await _context.SaveChangesAsync(token);
     }
     
-    public async Task<DeviceType?> GetDeviceType(string typeName, CancellationToken token)
+    public async Task<DeviceType?> GetDeviceType(int typeId, CancellationToken token)
     {
-        return await _context.DeviceTypes.FirstOrDefaultAsync(x => x.Name == typeName, token);
+        return await _context.DeviceTypes.FirstOrDefaultAsync(x => x.Id == typeId, token);
     }
 
     public async Task<int> UpdateDevice(Device device, CancellationToken token)
