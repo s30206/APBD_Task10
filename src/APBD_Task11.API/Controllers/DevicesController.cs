@@ -93,7 +93,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("api/devices/types")]
+    [Route("types")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetDeviceTypes(CancellationToken token)
     {
