@@ -84,4 +84,21 @@ public class DeviceService : IDeviceService
         var result = await _deviceRepository.UpdateDevice(device, token);
         return result > 0;
     }
+
+    public async Task<List<ShortDeviceTypeDTO>?> GetDeviceTypes(CancellationToken token)
+    {
+        var deviceTypes = await _deviceRepository.GetDeviceTypes(token);
+        var result = new List<ShortDeviceTypeDTO>();
+
+        foreach (var deviceType in deviceTypes)
+        {
+            result.Add(new ShortDeviceTypeDTO()
+            {
+                Id = deviceType.Id,
+                Name = deviceType.Name
+            });
+        }
+        
+        return result;
+    }
 }

@@ -91,4 +91,20 @@ public class DevicesController : ControllerBase
             return Problem(ex.Message);
         }
     }
+
+    [HttpGet]
+    [Route("api/devices/types")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetDeviceTypes(CancellationToken token)
+    {
+        try
+        {
+            var result = await _deviceService.GetDeviceTypes(token);
+            return result is not null ? Ok(result) : NotFound();
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
+    }
 }

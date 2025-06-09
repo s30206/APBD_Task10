@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using APBD_Task10.Models.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace APBD_Task10.Repositories;
 
@@ -54,5 +55,10 @@ public class DeviceRepository : IDeviceRepository
     {
         _context.Entry(device).State = EntityState.Modified;
         return await _context.SaveChangesAsync(token);
+    }
+
+    public async Task<List<DeviceType>?> GetDeviceTypes(CancellationToken token)
+    {
+        return await _context.DeviceTypes.ToListAsync(token);
     }
 }
