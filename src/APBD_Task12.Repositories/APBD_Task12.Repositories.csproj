@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\APBD_Task11.Models\APBD_Task11.Models.csproj" />
+      <ProjectReference Include="..\APBD_Task12.Models\APBD_Task12.Models.csproj" />
     </ItemGroup>
 
 </Project>
