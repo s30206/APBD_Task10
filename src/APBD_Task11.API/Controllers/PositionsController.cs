@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APBD_Task10;
 using APBD_Task10.Models.DTOs;
+using APBD_Task10.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace APBD_Task10.Controllers
@@ -16,11 +17,11 @@ namespace APBD_Task10.Controllers
     [Authorize]
     public class PositionsController : ControllerBase
     {
-        private readonly DeviceContext _context;
+        private readonly IPositionService _positionService;
 
-        public PositionsController(DeviceContext context)
+        public PositionsController(IPositionService service)
         {
-            _context = context;
+            _positionService = service;
         }
 
         // GET: api/Positions
@@ -30,20 +31,8 @@ namespace APBD_Task10.Controllers
         {
             try
             {
-                var positions = await _context.Positions.ToListAsync();
-
-                var result = new List<ShortPositionDTO>();
-
-                foreach (var position in positions)
-                {
-                    result.Add(new ShortPositionDTO()
-                    {
-                        Id = position.Id,
-                        Name = position.Name,
-                    });
-                }
-
-                return result;
+                var result = await _positionService.GetPositions();
+                return Ok(result);
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@ using System.Text;
 using APBD_Task10;
 using APBD_Task10.Models.DTOs;
 using APBD_Task10.Models.Helpers;
+using APBD_Task10.Models.Helpers.Middleware;
 using APBD_Task10.Repositories;
 using APBD_Task10.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,6 +12,8 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -41,6 +44,9 @@ builder.Services.AddTransient<IDeviceRepository, DeviceRepository>();
 builder.Services.AddTransient<IDeviceService, DeviceService>();
 builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<IRoleService, RoleService>();
+builder.Services.AddTransient<IPositionService, PositionService>();
+builder.Services.AddTransient<IValidationService, ValidationService>();
 builder.Services.AddScoped<ITokenService>(_ => new TokenService(jwtBuildData.Get<JwtOptions>()));
 
 var app = builder.Build();
@@ -58,5 +64,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ValidationMiddleware>();
 
 app.Run();

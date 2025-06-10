@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APBD_Task10;
 using APBD_Task10.Models.DTOs.Roles;
+using APBD_Task10.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace APBD_Task10.Controllers
@@ -16,11 +17,11 @@ namespace APBD_Task10.Controllers
     [Authorize]
     public class RolesController : ControllerBase
     {
-        private readonly DeviceContext _context;
+        private readonly IRoleService _roleService;
 
-        public RolesController(DeviceContext context)
+        public RolesController(IRoleService service)
         {
-            _context = context;
+            _roleService = service;
         }
 
         // GET: api/Roles
@@ -30,20 +31,8 @@ namespace APBD_Task10.Controllers
         {
             try
             {
-                var roles = await _context.Roles.ToListAsync();
-
-                var result = new List<ShortRoleDTO>();
-
-                foreach (var role in roles)
-                {
-                    result.Add(new ShortRoleDTO()
-                    {
-                        Id = role.Id,
-                        Name = role.Name
-                    });
-                }
-
-                return result;
+                var result = await _roleService.GetRoles();
+                return Ok(result);
             }
             catch (Exception ex)
             {
