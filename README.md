@@ -4,7 +4,7 @@ This project contains an API that connects to a Microsoft SQL Server database. T
 
 # Setting up `appsettings.json`
 
-Create a file named `appsettings.json` inside the `src/APBD_Task11.API` folder with the following content:
+Create a file named `appsettings.json` inside the `src/APBD_Task12.API` folder with the following content:
 
 <pre>
 {
