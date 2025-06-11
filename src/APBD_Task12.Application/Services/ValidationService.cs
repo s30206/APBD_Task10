@@ -9,14 +9,11 @@ namespace APBD_Task10.Services;
 
 public class ValidationService : IValidationService
 {
-    public readonly ILogger<ValidationService> _logger;
     public readonly DeviceContext _context;
     public readonly JsonElement _validations;
 
     public ValidationService(ILogger<ValidationService> logger, DeviceContext context)
     {
-        _logger = logger;
-
         var path = "../../validationRules/validation_rules.json";
         _validations = JsonDocument.Parse(File.ReadAllText(path)).RootElement.GetProperty("validations");
         logger.LogInformation("Validation rules loaded");
@@ -28,24 +25,20 @@ public class ValidationService : IValidationService
         var deviceType = await _context.DeviceTypes.FirstOrDefaultAsync(d => d.Id == request.TypeId);
         if (deviceType == null)
             throw new KeyNotFoundException($"Device type {request.TypeId} not found");
-        _logger.LogInformation("Successfully found device type");
         
         var entry = FindEntryForDeviceType(deviceType.Name);
         if (entry == null)
             return null;
-        _logger.LogInformation("Successfully found device entry in validation rules");
 
         var preRequestPropertyName = entry.Value.GetProperty("preRequestName").GetString();
         var value = typeof(InsertDeviceRequestDTO).GetProperty(preRequestPropertyName,
             BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(request);
         if (value == null)
             throw new KeyNotFoundException($"No field with name {preRequestPropertyName} was found");
-        _logger.LogInformation($"Successfully found {preRequestPropertyName} in request body");
         
         var preRequestPropertyValue = entry.Value.GetProperty("preRequestValue").GetString();
         if (!value.ToString()!.Equals(preRequestPropertyValue, StringComparison.OrdinalIgnoreCase))
             return null;
-        _logger.LogInformation($"Successfully validated {preRequestPropertyName} value in request body");
         
         var rules = entry.Value.GetProperty("rules").EnumerateArray();
         var errors = new List<string>();
@@ -61,8 +54,8 @@ public class ValidationService : IValidationService
                 else
                 {
                     var fieldValue = fieldElem.GetString();
-                    var regex = rule.GetProperty("regex").GetString();
-                    var pattern = regex?.Trim('/');
+                    var regexProperty = rule.GetProperty("regex").GetString();
+                    var pattern = regexProperty?.Trim('/');
                     
                     if (!Regex.IsMatch(fieldValue, pattern, RegexOptions.IgnoreCase))
                         errors.Add($"Property {field} doesn't match pattern {pattern}");
