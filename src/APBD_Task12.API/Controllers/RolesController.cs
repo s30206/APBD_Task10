@@ -18,10 +18,12 @@ namespace APBD_Task10.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;
+        private readonly ILogger<RolesController> _logger;
 
-        public RolesController(IRoleService service)
+        public RolesController(IRoleService service, ILogger<RolesController> logger)
         {
             _roleService = service;
+            _logger = logger;
         }
 
         // GET: api/Roles
@@ -29,6 +31,7 @@ namespace APBD_Task10.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ShortRoleDTO>>> GetRoles()
         {
+            _logger.LogInformation("GET /api/roles was called in RolesController");
             try
             {
                 var result = await _roleService.GetRoles();
@@ -36,6 +39,7 @@ namespace APBD_Task10.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occured in GET /api/roles in RolesController: {0}", ex.Message);
                 return Problem(ex.Message);
             }
         }

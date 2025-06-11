@@ -18,10 +18,12 @@ namespace APBD_Task10.Controllers
     public class PositionsController : ControllerBase
     {
         private readonly IPositionService _positionService;
+        private readonly ILogger<PositionsController> _logger;
 
-        public PositionsController(IPositionService service)
+        public PositionsController(IPositionService service, ILogger<PositionsController> logger)
         {
             _positionService = service;
+            _logger = logger;
         }
 
         // GET: api/Positions
@@ -29,6 +31,7 @@ namespace APBD_Task10.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ShortPositionDTO>>> GetPositions()
         {
+            _logger.LogInformation("GET /api/positions was called in PositionsController");
             try
             {
                 var result = await _positionService.GetPositions();
@@ -36,6 +39,7 @@ namespace APBD_Task10.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occured in GET /api/positions in PositionsController: {0}", ex.Message);
                 return Problem(ex.Message);
             }
         }

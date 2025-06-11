@@ -16,16 +16,19 @@ public class AuthController : ControllerBase
     private readonly DeviceContext _context;
     private readonly PasswordHasher<Account> _passwordHasher = new();
     private readonly ITokenService _tokenService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(DeviceContext context, ITokenService tokenService)
+    public AuthController(DeviceContext context, ITokenService tokenService, ILogger<AuthController> logger)
     {
         _context = context;
         _tokenService = tokenService;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] AccountLoginDTO request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("POST /api/auth was called in AuthController");
         try
         {
             var foundAccount = await _context.Accounts.Include(r => r.Role)
@@ -49,6 +52,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in POST /api/auth in AuthController: {0}", ex.Message);
             return Problem(ex.Message);
         }
     }

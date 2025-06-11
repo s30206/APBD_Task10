@@ -31,7 +31,7 @@ public class ValidationService : IValidationService
             return null;
 
         var preRequestPropertyName = entry.Value.GetProperty("preRequestName").GetString();
-        var value = typeof(InsertDeviceRequestDTO).GetProperty(preRequestPropertyName,
+        var value = request.GetType().GetProperty(preRequestPropertyName,
             BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(request);
         if (value == null)
             throw new KeyNotFoundException($"No field with name {preRequestPropertyName} was found");
@@ -54,11 +54,43 @@ public class ValidationService : IValidationService
                 else
                 {
                     var fieldValue = fieldElem.GetString();
-                    var regexProperty = rule.GetProperty("regex").GetString();
-                    var pattern = regexProperty?.Trim('/');
+                    var regexProperty = rule.GetProperty("regex");
+
+                    switch (regexProperty.ValueKind)
+                    {
+                        case JsonValueKind.String:
+                        {
+                            var regex = regexProperty.GetString();
+                            var pattern = regex?.Trim('/');
                     
-                    if (!Regex.IsMatch(fieldValue, pattern, RegexOptions.IgnoreCase))
-                        errors.Add($"Property {field} doesn't match pattern {pattern}");
+                            if (!Regex.IsMatch(fieldValue, pattern, RegexOptions.IgnoreCase))
+                                errors.Add($"Property {field} doesn't match pattern {pattern}");
+                            break;
+                        }
+                        case JsonValueKind.Array:
+                        {
+                            var regexs = regexProperty.EnumerateArray().Select(x => x.GetString()).ToList();
+                            var isMatch = false;
+                            foreach (var regex in regexs)
+                            {
+                                if (Regex.IsMatch(fieldValue, regex, RegexOptions.IgnoreCase))
+                                {
+                                    isMatch = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isMatch)
+                            {
+                                errors.Add($"Property {field} doesn't match pattern {string.Join(',', regexs)}");
+                            }
+                            break;
+                        }
+                        default:
+                        {
+                            throw new Exception("Regex type from validation rules JSON file is not supported");
+                        }
+                    }
                 }
             }
         }

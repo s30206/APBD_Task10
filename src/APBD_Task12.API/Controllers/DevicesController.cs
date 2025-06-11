@@ -13,16 +13,19 @@ namespace APBD_Task10Controllers;
 public class DevicesController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
+    private readonly ILogger<DevicesController> _logger;
 
-    public DevicesController(IDeviceService deviceService)
+    public DevicesController(IDeviceService deviceService, ILogger<DevicesController> logger)
     {
         _deviceService = deviceService;
+        _logger = logger;
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllDevices(CancellationToken token)
     {
+        _logger.LogInformation("GET /api/devices was called in DevicesController");
         try
         {
             var result = await _deviceService.GetAllDevices(token);
@@ -30,6 +33,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in GET /api/devices in DevicesController: {0}", ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -37,6 +41,7 @@ public class DevicesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetDeviceById(int id, CancellationToken token)
     {
+        _logger.LogInformation("GET /api/devices/{0} was called in DevicesController", id);
         try
         {
             var result = await _deviceService.GetDeviceById(id, token);
@@ -44,6 +49,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in GET /api/devices/{0} in DevicesController: {1}", id, ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -52,6 +58,7 @@ public class DevicesController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteDeviceById(int id, CancellationToken token)
     {
+        _logger.LogInformation("DELETE /api/devices/{0} was called in DevicesController", id);
         try
         {
             var result = await _deviceService.DeleteDeviceById(id, token);
@@ -59,6 +66,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in DELETE /api/devices/{0} in DevicesController: {1}", id, ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -67,6 +75,7 @@ public class DevicesController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddDevice([FromBody] InsertDeviceRequestDTO request, CancellationToken token)
     {
+        _logger.LogInformation("POST /api/devices was called in DevicesController");
         try
         {
             var result = await _deviceService.AddDevice(request, token);
@@ -74,6 +83,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in POST /api/devices in DevicesController: {0}", ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -81,6 +91,7 @@ public class DevicesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateDevice(int id, [FromBody] InsertDeviceRequestDTO request, CancellationToken token)
     {
+        _logger.LogInformation("PUT /api/devices/{0} was called in DevicesController", id);
         try
         {
             var result = await _deviceService.UpdateDevice(id, request, token);
@@ -88,6 +99,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in PUT /api/devices/{0} in DevicesController: {1}", id, ex.Message);
             return Problem(ex.Message);
         }
     }
@@ -97,6 +109,7 @@ public class DevicesController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetDeviceTypes(CancellationToken token)
     {
+        _logger.LogInformation("GET /api/devices/types was called in DevicesController");
         try
         {
             var result = await _deviceService.GetDeviceTypes(token);
@@ -104,6 +117,7 @@ public class DevicesController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error occured in GET /api/devices/types in DevicesController: {0}", ex.Message);
             return Problem(ex.Message);
         }
     }
